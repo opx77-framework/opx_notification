@@ -1,0 +1,12 @@
+{
+	"fallback.titled": "%s: %s",
+	"test.title": "Fixer",
+	"test.info": "New gig available in Watson.",
+	"test.success": "Transfer received: 1,250 €$",
+	"test.warning": "Your ride is running on fumes.",
+	"test.error": "Access denied. Clearance required.",
+	"test.long": "Incoming transmission: the package is waiting at the Kabuki market, third stall past the noodle bar. Come alone and keep your weapons holstered.",
+	"test.braces": "Braces stay readable: {{name}} }} {\"slots\":{\"a\":1}}",
+	"test.progress": "Uploading data... %d%%",
+	"test.done": "Upload complete."
+}

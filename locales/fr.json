@@ -1,0 +1,12 @@
+{
+	"fallback.titled": "%s : %s",
+	"test.title": "Fixer",
+	"test.info": "Nouveau contrat disponible à Watson.",
+	"test.success": "Virement reçu : 1 250 €$",
+	"test.warning": "Votre véhicule roule sur la réserve.",
+	"test.error": "Accès refusé. Habilitation requise.",
+	"test.long": "Transmission entrante : le colis vous attend au marché de Kabuki, troisième étal après le bar à nouilles. Venez seul et gardez vos armes rangées.",
+	"test.braces": "Les accolades restent lisibles : {{nom}} }} {\"slots\":{\"a\":1}}",
+	"test.progress": "Transfert des données... %d %%",
+	"test.done": "Transfert terminé."
+}

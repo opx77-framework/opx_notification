@@ -1,0 +1,94 @@
+/* =============================================================================
+   opx_notification — "transmitted feed": one fine line per notification, no card,
+   no panel, no outline. Marker (drawn), game time (mono, dim), TITLE · text.
+   TOKENS
+     text #e9fbff · dim #86a9b5 · line backing #031117 (faint, on the line only)
+     info #4fe3ff · success #3ddc97 · warning #ffb547 · error #ff3b47
+     text over the world: font-effect glow(0dp 3dp 0dp 1dp #00000080), shadow(0dp 1dp #000000cc)
+     (a soft dark halo plus the 1dp shadow: the shadow alone is lost over a bright sky)
+   Faces loaded on the client: Rajdhani regular, Chakra Petch regular/bold, Roboto Mono
+   regular/bold, Lato. Never ask for another weight/style: a missing face draws nothing.
+   No glyph for the marker or caret (the fonts lack them): the marker is a <path>, the caret a box.
+   Colours are #rrggbb or #rrggbbaa: rgba() with a fractional alpha is fully transparent in RmlUi.
+   Area position and widths come from config.lua (the "layout" stylesheet set from Lua);
+   the rules below are the default top-right layout.
+   ============================================================================= */
+
+/* ---- THEME ----------------------------------------------------------------- */
+/* One shape per type (the path data is in client/modules/notify.lua): info = dot, success = tick,
+   warning = triangle, error = cross. Dot and triangle are filled, tick and cross are strokes. */
+.kind-info .mark         { decorator: radial-gradient(circle, #4fe3ff40 0%, #4fe3ff00 70%); }
+.kind-info .mark path    { fill: #4fe3ff; stroke: #4fe3ff; }
+.kind-info .title,
+.kind-info .count        { color: #4fe3ff; }
+.kind-info .caret        { background-color: #4fe3ff; }
+
+.kind-success .mark      { decorator: radial-gradient(circle, #3ddc9740 0%, #3ddc9700 70%); }
+.kind-success .mark path { stroke: #3ddc97; }
+.kind-success .title,
+.kind-success .count     { color: #3ddc97; }
+.kind-success .caret     { background-color: #3ddc97; }
+
+.kind-warning .mark      { decorator: radial-gradient(circle, #ffb54740 0%, #ffb54700 70%); }
+.kind-warning .mark path { fill: #ffb547; stroke: #ffb547; }
+.kind-warning .title,
+.kind-warning .count     { color: #ffb547; }
+.kind-warning .caret     { background-color: #ffb547; }
+
+.kind-error .mark        { decorator: radial-gradient(circle, #ff3b4740 0%, #ff3b4700 70%); }
+.kind-error .mark path   { stroke: #ff3b47; }
+.kind-error .title,
+.kind-error .count       { color: #ff3b47; }
+.kind-error .caret       { background-color: #ff3b47; }
+
+/* ---- LAYOUT ---------------------------------------------------------------- */
+body, #root { width: 100%; height: 100%; pointer-events: none; }
+#root
+{
+    font-family: Rajdhani; font-weight: normal; font-style: normal; color: #e9fbff;
+    font-effect: glow(0dp 3dp 0dp 1dp #00000080), shadow(0dp 1dp #000000cc);
+}
+
+/* The area is `max` lines tall; #lines sits on its bottom edge, so the newest line stays put
+   and the older ones move up. Explicit widths: the parents are absolute.
+   The "layout" stylesheet (client/modules/layout.lua) writes both edges of each axis over this rule
+   (top + bottom, left + right): with both set RmlUi places the box by top / left, so the edge that is
+   not used has to be auto. */
+#notify-anchor { position: absolute; right: 32dp; top: 140dp; width: 460dp; height: 130dp; }
+#lines         { position: absolute; left: 0dp; bottom: 0dp; width: 460dp; display: block; }
+
+/* One row per notification (the element Lua fades and moves); the strip shrinks to its text. */
+.line  { display: block; margin-top: 2dp; opacity: 1; font-size: 17dp; line-height: 21dp; }
+.strip
+{
+    display: inline-block; max-width: 460dp; padding: 1dp 14dp 1dp 8dp;
+    decorator: linear-gradient(90deg, #0311178c 0%, #03111759 60%, #03111700 100%);
+    font-effect: glow(0dp 3dp 0dp 1dp #00000080), shadow(0dp 1dp #000000cc);
+}
+
+/* Marker: a 14dp box in the text flow (its soft glow is the gradient of the THEME block) with the
+   10dp shape of the type drawn inside. opacity is declared: Lua pulses it when a line is updated. */
+.mark  { display: inline-block; position: relative; width: 14dp; height: 14dp; margin-right: 5dp; vertical-align: middle; opacity: 1; }
+.mark path
+{
+    position: absolute; left: 2dp; top: 2dp; width: 10dp; height: 10dp;
+    fill: transparent; stroke-width: 1.6dp; stroke-linecap: round; stroke-linejoin: round;
+}
+.time  { font-family: "Roboto Mono"; font-weight: normal; font-size: 12dp; color: #86a9b5; margin-right: 9dp; }
+.title { font-family: "Chakra Petch"; font-weight: bold; font-size: 12dp; letter-spacing: 0.12em; }
+.sep   { color: #86a9b5; margin: 0dp 6dp; }
+.msg   { color: #e9fbff; }
+.count { display: none; font-family: "Roboto Mono"; font-weight: normal; font-size: 11dp; margin-left: 7dp; opacity: 1; }
+.merged .count { display: inline; }
+
+/* Caret: an underscore-shaped bar after the typed text, only while .typing is on the line. */
+.caret { display: none; width: 8dp; height: 2dp; margin-left: 2dp; opacity: 1; }
+.typing .caret { display: inline-block; animation: 0.5s linear-in-out infinite caret-blink; }
+@keyframes caret-blink { 0% { opacity: 1; } 55% { opacity: 1; } 60% { opacity: 0; } 100% { opacity: 0; } }
+
+/* Calm motion: Lua sets .calm on #root when it measured the player's nui.reducedmotion (the setting
+   lands ui:animate, not a stylesheet loop). New lines then appear whole; a line still typing keeps a
+   steady caret. */
+#root.calm .caret { animation: none; }
+
+#motion-probe { position: absolute; left: 0dp; top: 0dp; width: 1dp; height: 1dp; }

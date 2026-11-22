@@ -1,0 +1,15 @@
+<rml>
+<head>
+    <title>opx_notification</title>
+    <link type="text/rcss" href="nui://open77/open77.rcss"/>
+    <link type="text/rcss" href="notify.rcss"/>
+</head>
+<body>
+<div id="root">
+    <!-- Area placed from Config.notify.position (the "layout" stylesheet); lines are created from Lua. -->
+    <div id="notify-anchor"><div id="lines"></div></div>
+    <!-- Empty element Lua slides to detect nui.reducedmotion; draws nothing. -->
+    <div id="motion-probe"></div>
+</div>
+</body>
+</rml>
